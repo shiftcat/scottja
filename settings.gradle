@@ -1,0 +1,4 @@
+
+rootProject.name = 'scottja'
+
+include 'scott-core', 'scott-api', 'scott-vo', 'scott-flux'

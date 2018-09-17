@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration>
+
+    <include resource="org/springframework/boot/logging/logback/defaults.xml" />
+    <include resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+    <!-- 변수 지정 -->
+    <!--
+    <property name="LOG_DIR" value="/logs" />
+    -->
+
+    <property name="LOG_PATH_NAME" value="${LOG_DIR}/data.log" />
+
+    <!-- FILE Appender -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_PATH_NAME}</file>
+        <!-- 일자별로 로그파일 적용하기 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_PATH_NAME}.%d{yyyyMMdd}</fileNamePattern>
+            <maxHistory>60</maxHistory> <!-- 일자별 백업파일의 보관기간 -->
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5p] [%t] %C.%M:%L $> %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%-5p] [%t] %C.%M:%L $> %m%n</pattern>
+        </layout>
+    </appender>
+
+
+    <springProfile name="local">
+
+        <logger name="kr.scott" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.hibernate" level="INFO" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.hibernate.engine.jdbc.spi.SqlStatementLogger" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.hibernate.loader.Loader" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.hibernate.internal.util.EntityPrinter" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.springframework.web" level="INFO" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.springframework.transaction.interceptor" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.springframework.orm.jpa" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.springframework.transaction" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="STDOUT" />
+        </root>
+    </springProfile>
+
+
+    <springProfile name="real">
+
+        <logger name="kr.scott" level="INFO" additivity="false">
+            <appender-ref ref="FILE" />
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.springframework.orm.jpa" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.springframework.transaction" level="DEBUG" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <logger name="org.springframework" level="ERROR" additivity="false">
+            <appender-ref ref="STDOUT" />
+        </logger>
+
+        <root level="INFO">
+            <appender-ref ref="FILE" />
+            <appender-ref ref="STDOUT" />
+        </root>
+    </springProfile>
+
+
+</configuration>

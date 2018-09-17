@@ -1,0 +1,49 @@
+
+//apply plugin: 'jar'
+
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'kr.scott.ScottFluxApplication'
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java'
+        }
+        resources {
+            srcDirs 'src/main/resources'
+        }
+    }
+    test {
+        java {
+            srcDirs 'src/test/java'
+        }
+        resources {
+            srcDirs 'src/test/resources'
+        }
+    }
+}
+
+
+dependencies {
+    compile project(':scott-core')
+
+    // Spring Boot
+    compile('org.springframework.boot:spring-boot-starter-webflux')
+    compile('org.springframework.boot:spring-boot-starter-validation')
+
+    compile group: 'org.hibernate.validator', name: 'hibernate-validator', version: '6.0.11.Final'
+
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
+    testCompile('io.projectreactor:reactor-test')
+}

@@ -1,0 +1,63 @@
+
+apply plugin: 'war'
+
+
+//bootWar {
+//    enabled = true
+//}
+
+war {
+    baseName="scott-api"
+    version="1.0"
+//    enabled = true
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java'
+        }
+        resources {
+            srcDirs 'src/main/resources'
+        }
+    }
+    test {
+        java {
+            srcDirs 'src/test/java'
+        }
+        resources {
+            srcDirs 'src/test/resources'
+        }
+    }
+}
+
+configurations {
+    providedRuntime
+}
+
+dockerCompose {
+    myTest {
+        useComposeFiles = ['docker-compose.yml']
+        startedServices = ['mysql']
+        isRequiredBy(tasks.test)
+    }
+}
+
+dependencies {
+    compile project(':scott-core')
+    compile project(':scott-vo')
+
+    // Spring Boot
+    compile('org.springframework.boot:spring-boot-starter-web')
+    compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.boot:spring-boot-starter-tomcat")
+
+    // Swagger
+    compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1'
+    compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1'
+
+    // json validator
+    compile group: 'io.rest-assured', name: 'json-schema-validator', version: '3.1.1'
+
+}

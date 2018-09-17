@@ -1,0 +1,85 @@
+
+
+
+bootJar {
+    enabled = false
+}
+
+jar {
+    enabled = true
+}
+
+
+// QueryDSL 빌드 스코프 추가
+configurations {
+    querydslapt
+}
+
+
+// 소스를 generate 하는 generateQueryDSL 태스크
+task generateQueryDSL(type: JavaCompile, group: 'build', description: 'Query dsl Generator') {
+    source = sourceSets.main.java
+    classpath = configurations.compile + configurations.querydslapt
+    options.compilerArgs = [
+            "-proc:only",
+            "-processor", "com.querydsl.apt.jpa.JPAAnnotationProcessor"
+    ]
+    options.encoding = 'UTF-8'
+    // QueryDSL 자동생성 되는 소스의 경로
+    destinationDir = file('src/main/generated')
+}
+
+compileJava {
+    dependsOn generateQueryDSL
+    source generateQueryDSL.destinationDir
+}
+
+clean {
+    delete generateQueryDSL.destinationDir
+}
+
+
+sourceSets {
+    main {
+        java {
+            srcDirs 'src/main/java', 'src/main/generated'
+        }
+        resources {
+            srcDirs 'src/main/resources'
+        }
+    }
+    test {
+        java {
+            srcDirs 'src/test/java'
+        }
+        resources {
+            srcDirs 'src/test/resources'
+        }
+    }
+}
+
+
+dockerCompose {
+    myTest {
+        useComposeFiles = ['docker-compose.yml']
+        startedServices = ['mysql']
+        isRequiredBy(tasks.test)
+    }
+}
+
+
+dependencies {
+    compile project(':scott-vo')
+
+    // Spring Boot
+    compile("org.springframework.boot:spring-boot-starter-jdbc")
+    compile("org.springframework.boot:spring-boot-starter-data-jpa")
+
+    // Database
+//    runtime group: 'mysql', name: 'mysql-connector-java', version: '8.0.11'
+    runtime group: 'mysql', name: 'mysql-connector-java', version: '5.1.46'
+    def querydslVersion = "4.1.4"
+    compile ("com.querydsl:querydsl-core:$querydslVersion")
+    compile ("com.querydsl:querydsl-apt:$querydslVersion")
+    compile ("com.querydsl:querydsl-jpa:$querydslVersion")
+}

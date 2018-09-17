@@ -1,0 +1,59 @@
+version: '3'
+services:
+  mysql:
+    container_name: mysql
+    image: mysql:8.0
+    ports:
+      - '3306:3306'
+    volumes:
+      - '${MYSQL_DATA_DIR}:/var/lib/mysql'
+    environment:
+        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+        - MYSQL_DATABASE=scott
+        - MYSQL_USER=${MYSQL_USER}
+        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+    # command: mysqld --lower_case_table_names=1 --skip-ssl
+    command: mysqld --lower_case_table_names=1
+
+
+  scott.api:
+    container_name: scottja.api
+    image: scottja-api:latest
+    build: scott-api/.
+    ports:
+      - 8080:5000
+      - 9010:9010
+    depends_on:
+      - mysql
+    links:
+      - mysql
+    environment:
+      - server.port=5000
+      - LOG_DIR=/logs
+      - SPRING_PROFILES_ACTIVE=real
+      - DATABASE_SERVER=mysql
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=scott
+      - DATABASE_USER=${MYSQL_USER}
+      - DATABASE_PASSWD=${MYSQL_PASSWORD}
+
+
+  scott.flux:
+    container_name: scottja.flux
+    image: scottja-flux:latest
+    build: scott-flux/.
+    ports:
+    - 5050:5050
+    depends_on:
+    - mysql
+    links:
+    - mysql
+    environment:
+    - server.port=5050
+    - LOG_DIR=/logs
+    - SPRING_PROFILES_ACTIVE=real
+    - DATABASE_SERVER=mysql
+    - DATABASE_PORT=3306
+    - DATABASE_NAME=scott
+    - DATABASE_USER=${MYSQL_USER}
+    - DATABASE_PASSWD=${MYSQL_PASSWORD}
