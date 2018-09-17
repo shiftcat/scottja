@@ -3,7 +3,7 @@
 이 프로젝트는 오라클 데이터베이스에서 scott 계정으로 제공되는 샘플 데이터를 RESTful API로 제공하는 샘플 프로젝트이다.
 
 
-## Moudle
+## Modules
 * scott-core
 * scott-vo
 * scott-api
