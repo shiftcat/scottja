@@ -45,7 +45,8 @@ public class DeptDAOImpl implements DeptDAO
     {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QDept qDept = QDept.dept;
-        return queryFactory.selectFrom(qDept).where(qDept.deptno.eq(deptno)).fetchOne();
+        return queryFactory.selectFrom(qDept)
+                .where(qDept.deptno.eq(deptno)).fetchOne();
     }
 
     @Override
@@ -53,7 +54,8 @@ public class DeptDAOImpl implements DeptDAO
     {
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QDept qDept = QDept.dept;
-        queryFactory.delete(qDept).where(QDept.dept.deptno.eq(deptno)).execute();
+        queryFactory.delete(qDept)
+                .where(QDept.dept.deptno.eq(deptno)).execute();
     }
 
     @Override

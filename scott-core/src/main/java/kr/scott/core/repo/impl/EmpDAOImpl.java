@@ -46,7 +46,9 @@ public class EmpDAOImpl implements EmpDAO
         QEmp qEmp = QEmp.emp;
         QDept qDept = QDept.dept;
 
-        JPAQuery query = queryFactory.selectFrom(qEmp).leftJoin(qEmp.dept, qDept).fetchJoin().where();
+        JPAQuery query = queryFactory.selectFrom(qEmp)
+                .leftJoin(qEmp.dept, qDept)
+                .fetchJoin().where();
         if(StringUtils.isNotEmpty(searchVO.getEname())) {
             query.where(qEmp.ename.contains(searchVO.getEname()));
         }
@@ -101,7 +103,8 @@ public class EmpDAOImpl implements EmpDAO
         QDept qDept = QDept.dept;
         QEmp qEmp = QEmp.emp;
 
-        return queryFactory.selectFrom(qEmp).where(qDept.deptno.eq(deptno)).fetch();
+        return queryFactory.selectFrom(qEmp)
+                .where(qDept.deptno.eq(deptno)).fetch();
     }
 
 
@@ -113,7 +116,8 @@ public class EmpDAOImpl implements EmpDAO
         QDept qDept = QDept.dept;
         QEmp qEmp = QEmp.emp;
 
-        return queryFactory.selectFrom(qEmp).where(qDept.deptno.eq(deptno)).fetchCount();
+        return queryFactory.selectFrom(qEmp)
+                .where(qDept.deptno.eq(deptno)).fetchCount();
     }
 
 
@@ -124,7 +128,8 @@ public class EmpDAOImpl implements EmpDAO
         JPAQueryFactory queryFactory = new JPAQueryFactory(em);
         QEmp qEmp = QEmp.emp;
 
-        queryFactory.delete(qEmp).where(qEmp.empno.eq(empno)).execute();
+        queryFactory.delete(qEmp)
+                .where(qEmp.empno.eq(empno)).execute();
     }
 
 
